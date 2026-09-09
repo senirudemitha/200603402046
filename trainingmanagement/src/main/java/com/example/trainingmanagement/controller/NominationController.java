@@ -23,4 +23,11 @@ public class NominationController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping
+public ResponseEntity<?> getAll() {
+    return ResponseEntity.ok(service.getAll());
 }
+    
+}
+
+

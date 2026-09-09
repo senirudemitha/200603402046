@@ -27,4 +27,7 @@ public class NominationService {
 
         return repository.save(nomination);
     }
+    public java.util.List<Nomination> getAll() {
+    return repository.findAll();
+}
 }
