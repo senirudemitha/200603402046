@@ -26,6 +26,14 @@ public class Nomination {
 
     private String status;
 
+    private String departmentName;
+
+    private String designation;
+
+    private String grade;
+
+    private Integer yearsOfService;
+
     public Nomination() {
     }
 
@@ -79,5 +87,37 @@ public class Nomination {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public Integer getYearsOfService() {
+        return yearsOfService;
+    }
+
+    public void setYearsOfService(Integer yearsOfService) {
+        this.yearsOfService = yearsOfService;
     }
 }

@@ -11,13 +11,19 @@ import java.util.Optional;
 public class NominationService {
 
     private final NominationRepository repository;
+    private final EligibilityService eligibilityService;
 
-    public NominationService(NominationRepository repository) {
+    public NominationService(
+            NominationRepository repository,
+            EligibilityService eligibilityService) {
+
         this.repository = repository;
+        this.eligibilityService = eligibilityService;
     }
 
     public Nomination create(Nomination nomination) {
 
+        // TASK 1 - Duplicate prevention
         boolean duplicate =
                 repository.existsByTrainingProgramIdAndOfficerId(
                         nomination.getTrainingProgramId(),
@@ -30,6 +36,12 @@ public class NominationService {
             );
         }
 
+
+        // TASK 3 - Eligibility checking
+        eligibilityService.checkEligibility(nomination);
+
+
+        // TASK 2 - Capacity checking
         long confirmedCount =
                 repository.countByTrainingProgramIdAndStatus(
                         nomination.getTrainingProgramId(),
@@ -50,6 +62,7 @@ public class NominationService {
     }
 
     public List<Nomination> getByTraining(Long trainingProgramId) {
+
         return repository.findByTrainingProgramIdOrderByIdAsc(
                 trainingProgramId
         );
@@ -66,16 +79,21 @@ public class NominationService {
             );
         }
 
-        Nomination nomination = optionalNomination.get();
+        Nomination nomination =
+                optionalNomination.get();
 
         boolean wasConfirmed =
-                "CONFIRMED".equals(nomination.getStatus());
+                "CONFIRMED".equals(
+                        nomination.getStatus()
+                );
 
         Long trainingProgramId =
                 nomination.getTrainingProgramId();
 
         repository.delete(nomination);
 
+
+        // TASK 2 - Promote first waiting officer
         if (wasConfirmed) {
 
             Optional<Nomination> firstWaiting =
@@ -86,8 +104,12 @@ public class NominationService {
                             );
 
             if (firstWaiting.isPresent()) {
-                Nomination promoted = firstWaiting.get();
+
+                Nomination promoted =
+                        firstWaiting.get();
+
                 promoted.setStatus("CONFIRMED");
+
                 repository.save(promoted);
             }
         }
